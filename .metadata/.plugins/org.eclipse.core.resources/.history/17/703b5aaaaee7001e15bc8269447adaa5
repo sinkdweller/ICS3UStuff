@@ -1,0 +1,22 @@
+
+public class FactorialTable {
+
+	public static void main(String[] args) {
+		String factorialString = "1";
+		int factorial = 1;
+		
+		for(int i=2, space=15; i<=15; i++, space--) {
+			System.out.print(i);
+			factorialString += ("x" + i);
+			factorial =factorial*i;
+			for (int b = 1; b<=space; b++) {
+				System.out.print(" ");	
+			}
+			System.out.print(factorialString);
+			
+			System.out.print(space +factorial);
+			System.out.println("");
+		}
+	}
+
+}

@@ -1,0 +1,10 @@
+//=================================================================
+// Program name
+// Author
+// Date
+// Programming Language, version number
+//=================================================================
+// Problem Definition – Required to determine the amount of money given to the millionth native based on the //1 st
+being given $1, the next two $2, etc
+/*IOP
+//=================================================================

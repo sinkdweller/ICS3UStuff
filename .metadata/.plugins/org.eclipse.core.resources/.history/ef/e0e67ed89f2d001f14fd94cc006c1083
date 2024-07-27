@@ -1,0 +1,655 @@
+//==============================================================================
+// Magic playlist
+// Evelynn
+// Jun 18 2024
+// JE 17
+// ==============================================================================
+// Problem Definition – PLaylist manager
+//==============================================================================
+
+import java.io.*; //import java.io library
+
+public class Playlist {//Start of Playlist class
+	
+//Corresponding indexes to "attributes" in song array
+static final int SNAME = 0;
+static final int ARTIST = 1;
+static final int GENRE = 2;
+static final int ALBUM = 3;
+static final int RATING = 4;
+
+static final char[] ALPHORDER = {'0', '1', '2', '3', '4','5', '6', '7', '8', '9', 'a', 'b','c', 'd', 'e', 'f', 'g', 'h', 
+'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w','x', 'y', 'z'}; //Alphabetical order
+
+static String playlistLocation = "/Users/evelynnlu/eclipse-workspace/Culminating/";	    //Folder for playlists
+static String fileLoc = "/Users/evelynnlu/eclipse-workspace/Culminating/PlaylistData";  //current file location of user
+static int entryIndx = 0; 																//keeps track of the number of songs (Not the actual playlist size)
+static String[][] songArray = new String[10][5];										//Playlist Array
+
+	public static void main(String[] args)throws IOException { 							//main class
+		Playlist method = new Playlist();												//create new instance of Playlist
+		System.out.println("Your magical playlist manager");
+
+		method.printMenuOptions();														//print menu options to screen
+
+		String option = method.askForNum("", 8, "invalid input");					//Prompt the user to choose an option
+		if(option.equals("0"))														//Warning user. prompt again
+			option = method.askSomething("warning: closing your program without saving will erase any unsaved changes. Press [0] again to continue."); //prompt
+		
+		while(!option.equals("0")) {												//start program while loop
+			switch (option) {														//switch case based on user's chosen option
+			   // Making/loading in a playlist from a file
+				case "1":															
+					System.out.println("Warning: loading a new playlist without saving will erase your edits.");	//warning user	
+					switch(method.askForNum("enter [0] to quit \n[1] to create and load from new playlist \n[2] to load from existing playlist.", 2, "invalid input")) { //prompt user
+						case("1"):	//Make new playlist
+							method.makeNewFile(method.askSomething("What do you want to name this new playlist?")); 		//Make file from scratch
+							break;																							//end of case 1
+						
+						case("2"):  //Load from existing playlist
+							method.readFile(method.askSomething("What is the name of your playlist?"));						//Load in file to songArray
+							System.out.println("Playlist loaded.");															//Playlist loaded
+							break;																							//end of case 2
+					}//end of case 1 Switch
+					break; //end of case 1
+				//Make random playlist
+				case "2":
+					if(method.askSomething("Warning: making a new random playlist now will erase any unsaved edits."
+							+ " \n[0] to quit and return to menu, or type any key to continue").equals("0")) //ask if user wants to return to menu
+						break;//end of case 2
+					
+					System.out.println("Making new random playlist...");//Making new playlist msg
+					method.makeRandomPlaylist(10);	//Makes random playlist, changes songArrat to random playlist
+					if(method.askForNum("Would you like to display the playlist in a table? [0] for no,[1] for yes", 1, "Please type 0 or 1").equals("1"))//prompt for display
+						method.printArray(songArray, null);		//print array as table
+					break;//end of case2
+
+				//Output	
+				case "3":
+					if(entryIndx==0) { 					//check if the playlist is empty
+						System.out.println("your playlist is empty. Maybe try loading one in. ");//error msg if empty playlist 
+						break;							//exit case 3						
+					}//end of if
+					String printLoc = method.askForNum("[0] to quit \n[1] to output to screen \n[2] to output/save to a file", 2, "Invalid input"); //prompt for ouput loc
+					if(printLoc.equals("0"))//return to menu if user inputs 0
+						break;	//exit case3
+			
+					switch (printLoc) {//start of switch case for printLocation
+						//Print playlist to console
+						case "1":				
+							method.printArray(songArray, null);//print the array to screen
+							break;//exit case 1
+						//Save to file
+						case "2": 
+							String saveLoc = method.askSomething("Please enter a the name of your playlist to save your file. \nor [w] to overwrite your current playlist file.");	//prompt for saveLoc on computer
+							if(!saveLoc.equals("w"))  	
+								fileLoc = saveLoc;		//if user choose not to overwrite, file location in the program changes to new loc 
+							
+
+							method.writeToFile(fileLoc); //write the playlist stored in the array to the file
+							break;//break out of case 2 of case 3
+						}//end of printlocation switch
+					break; //end of case 3
+					
+				//Sort Playlist
+				case "4" :
+					if(entryIndx==0) { //if there are no songs in playlist
+						System.out.println("Please load a playlist first!"); //error msg to add songs
+						break;//break out of case 4
+					}//end of if
+					int sortFactor = Integer.parseInt(method.askForNum("[0] to return to menu \n[1] to sort by Song name\n[2]"
+							+ " to sort by Artist\n[3] to sort by genre\n[4] to sort by album\n[5] to sort by rating.", 5, "Please enter a number above!")); //prompt user for how to sort song.
+					if(sortFactor==0) //return to menu if enters 0
+						break;//break out of case 4
+					
+					String ascDesc = method.askForNum("0 to sort by descending\n1 to sort by ascending.", 1, "Enter one of the numbers above!"); //prompting user for ascending or descending
+					switch(ascDesc) {//start of ascending or switch case 
+						//descending
+						case "0":	
+							if((method.checkSort(songArray, sortFactor-1, false))) //if it is sorted, skip to break
+								System.out.println("It's already sorted!"); //say it's already sorted
+							else
+								method.bubbleSort(sortFactor-1, false);//if not sorted, sort. (array, which category to sort by, not ascending)
+							break;//break out of descending option
+						//ascending
+						case "1":
+							if(method.checkSort(songArray, sortFactor-1, true))//if sorted, skip to break
+								System.out.println("It's already sorted!");//Print it's already sorted
+							else
+								method.bubbleSort(sortFactor-1, true);//if not sorted, sort. (array, which category to sort by, ascending)
+							break;//break out of ascending option
+					}//end of ascDesc switch
+					if(method.askForNum("Would you like to display the playlist in a table? [0] for no,[1] for yes", 1, "Please type 0 or 1").equals("1"))//prompt for display
+						method.printArray(songArray, null);		//print array as table
+					break;//end of case 4
+				//Add new Song
+				case "5"  :
+					String []newEntry = new String[5]; //Make a new array for the new song
+					//Asking user to fill information
+					newEntry[SNAME] = method.askSomething("Enter the song name");			//prompt for song name for new song
+					newEntry[ARTIST] = method.askSomething("Enter the song Artist");		//for artist
+					newEntry[GENRE] = method.askSomething("Enter the song Genre");			//for genre
+					newEntry[ALBUM] = method.askSomething("Enter the song Album");			//for album
+					newEntry[RATING] = method.askForNum("Enter the song Rating", 5, "Please enter a rating between 0-5"); //method checks if enters between 0-5 (prompt, highest, error msg)
+					method.addToArray(newEntry);//Add song Array to songArray
+					
+					if(method.askForNum("Would you like to display the playlist in a table? [0] for no,[1] for yes", 1, "Please type 0 or 1").equals("1"))//prompt for display
+						method.printArray(songArray, null);		//print array as table
+					break; //end of case 5
+
+				//edit song
+				case "6":
+						if(entryIndx ==0) { //return to menu if nothing to edit(empty playlist)
+							System.out.println("Your playlist is empty! Please load in a playlist, add a song or generate a random one first."); //error msg that playlist is empty
+							break;//break out of edit song case
+						}//end of if statement
+						method.printArray(songArray, null); //print the playlist to console
+						int editIndx = Integer.parseInt(method.askForNum("Please enter the index of the song you want to edit, or type 0 to search for a song.", entryIndx, "Song doesn't exist at that index!")); //prompt user
+						while(editIndx==0) {//keep asking what user wants to edit/search until they choose to edit
+							method.printSearchedKeys();	//Search if user chooses to search (0)
+							editIndx = Integer.parseInt(method.askForNum("Please enter the index of the song you want to edit, or type 0 to search for a song.", entryIndx, "Song doesn't exist at that index!")); //prompt again
+
+						}
+						editIndx--; //real array index is one less than displayed index
+						String[] editSong = songArray[editIndx];  //the song user wants to edit stored as a variable
+						while(true) { //start of while loop for editing
+							String editFactor = method.askForNum("0 To return to menu \n1 to edit by Song name\n2 to edit by Artist\n3 to edit by genre \n4 to edit by album, \n5 to edit by rating \n6 to delete.", 6, "Please enter a valid input"); //propmt which attribute of entry to edit
+							if(editFactor.equals("0")) //return to menu
+								break;//break out of editing case
+							if(editFactor.equals("5")) //edit by rating
+								songArray[editIndx][Integer.parseInt(editFactor)-1]= method.askForNum("Please make a new entry.", 5, "please choose between 0-5!"); //prompt + check for number between 0 - 5
+							if(editFactor.equals("6")) {	//delete song
+								method.deleteSong(editIndx);	//delete song method
+								break;//break out of editing loop
+							}//end of if loop for delete song
+								
+							else //Making a new entry for chosen attribute
+								songArray[editIndx][Integer.parseInt(editFactor)-1]= method.askSomething("Please make a new entry.");
+							
+						}//end of editing while loop
+						if(method.askForNum("Would you like to display the playlist in a table? [0] for no,[1] for yes", 1, "Please type 0 or 1").equals("1"))//prompt for display
+							method.printArray(songArray, null);		//print array as table
+						break; //end of case 6
+				//Search for a playlist entry
+				case "7" :
+					if(entryIndx ==0) { //return to menu if there's nothing to search(playlist empty)
+						System.out.println("Your playlist is empty! Please load in a playlist or generate a random one first."); //print error msg
+						break;//break  out of case 7
+					} //end of if statement
+					method.printSearchedKeys(); //Search for it
+					break; //return to menu (end of case 7)
+				case "8" :
+					method.printTable();
+
+			}//end of command/menu switch
+					
+			method.printMenuOptions(); //print menu options again
+			option = method.askForNum("", 8, "invalid input");					//Prompt for command again
+			if(option.equals("0")) 												//Make sure user wants to quit
+				option = method.askSomething("warning: closing your program without saving will erase any unsaved changes. Press [0] again to continue."); //ask if user really wants to quit
+			}//end of while loop
+		System.out.println("Program exited!"); //Print end of program
+	}//end of main
+	
+	
+	public void printTable()throws IOException {
+		
+		PrintWriter output; 									
+		output = new PrintWriter(new FileWriter("/Users/evelynnlu/eclipse-workspace/Culminating/PlaylistTable"));
+		output.println("#index         SONG NAME:                 ARTIST:                    GENRE:                     ALBUM:                     RATING:");	//print the column names
+		int index =0;
+		for(int i =0; i<songArray.length; i++) { //loop through array
+			if(songArray[i][0] != null) {		//if there is an element at the index
+				int numSpace = 27;//default space  between index and rest
+				String x;					//What to print at the index space
+					x = ""+ index;			//or don't
+				output.print(x);
+				
+				for(int Space1 = 0; Space1 <15 - x.length(); Space1++ )	//print calculated spaces - index space
+					output.print(" ");
+				
+				int lastWordLength = 0;									//keeps track of how long last word was
+				for(int j = 0; j<songArray[0].length; j++) {					//for each element in the array print the element
+					output.print(songArray[i][j]);							
+					lastWordLength = songArray[j][j].length();					//Last word length is subtracted from usual space # to print consistent spaces
+					for(int s =0; s< numSpace-lastWordLength; s++) 
+						output.print(" ");
+				}//end of if statement
+			System.out.println(""); //print new line
+	}
+	}
+	}
+	
+	//METHODS!!!!! METHODS!!!!!!!
+	/* *PrintMenuOptions
+	* This procedural method prints out menu and options for user
+	* @param none
+	* @return void
+	*/
+	public void printMenuOptions() {//start of printMenuOptions method
+		//printing the menu
+		System.out.println("MENU/COMMANDS:");
+		System.out.println("[0] to quit");
+		System.out.println("[1] to open a playlist from a file");
+		System.out.println("[2] to generate a random playlist");
+		System.out.println("[3] to print/save your playlist");
+		System.out.println("[4] to sort your playlist");
+		System.out.println("[5] to add to your playlist");
+		System.out.println("[6] to edit to your playlist");
+		System.out.println("[7] to search to your playlist");
+		System.out.println("[8] to print to file");
+
+	}//end of printMenuOptions method
+	
+	/* *deleteSong
+	 * This method deletes Songs from songArray:
+	 * 1) makes a temporary array with one less length than songArray
+	 *@throws IOException
+	 *@param int index = index of songArray to be removed
+	 * @return none
+	 */
+	public void deleteSong(int index)throws IOException {				//start of deleteSong method
+		String[][] tempArray = new String[songArray.length-1][5];		//make new temp array, one length smaller than songArray
+		for(int i =0; i<index; i++) 									//looping through everything before deleted index
+			tempArray[i] = songArray[i];								//Make a copy of songArray up to index of deleted element
+		
+		for(int i =index; i<songArray.length-1; i++)					//From index, move every element one down in tempArray
+			tempArray[i] = songArray[i+1];								//element to right  = elementto left
+		
+		songArray = tempArray;					//assign temparray back to song array
+		entryIndx--;							//decrease occupied index of songs by 1
+	}//end of deleteSong method
+	
+	/* *printSearchedKeys
+	 * This procedural method asks for a category to search songs. Then displays the found songs either highlighted or as their own table
+	 * 1) calls askForNum to ask user to choose what category to search in
+	 * 2) calls askSomething to ask user what "key" to look for
+	 * 3) calls findByKey,which searches and returns an array of indexes in SongArray corresponding to key.
+	 * 4) prints them highlighted part of songArray or own isolated table
+	 * @param = none
+	 * @return none
+	 * @throws IOexcpetion
+	 */
+	public void printSearchedKeys()throws IOException {	//start of printSearchedKeys method
+		int searchFactor = Integer.parseInt(askForNum("[0] to search by Song name, [1] to search by Artist, [2] to search by genre, [3] to search by album or [4] to search by rating.", 4,"invalid input"));	//prompt user for search factor
+		String key = askSomething("Whats the key you want to search for? (case sensitive)");	//Prompt user for key to search for
+		String[] foundIndex=(findByKey(key, searchFactor));					//Store found keys in an array
+		if(foundIndex.length == 0)											//if array has no elements, no keys were found
+			System.out.println("No key found.");							//print no key is found
+		else {//start of else 
+			System.out.println(foundIndex.length + " entries were found:");	//Print how many entries were found
+			
+			if(askForNum("[0] to print only found entries, or [1] to highlight found entries", 2, "Please choose 1 or 2.").equals("1")) //Ask for display method
+				printArray(songArray, foundIndex);				//Print songArray with highlights
+			else {//start of second else 
+				int foundIndexInt;
+				System.out.println("#index         SONG NAME:                 ARTIST:                    GENRE:                     ALBUM:                     RATING:");
+				for(int i =0; i<foundIndex.length; i++) {  						 //start of for i loop: looping through each index in which a searched element was found
+					foundIndexInt = Integer.parseInt(foundIndex[i]);
+					printLine(songArray[foundIndexInt], foundIndexInt+1, false); //print formatted line for each element found
+					System.out.println("");										 //print a new line
+				}//end of for i loop
+			}//end of second else 
+		}//end off first else
+	}//end printSearchedKeys
+	
+	/* *findByKey
+	 * This functional method searches for occurrences of "keys" in songArray, and returns them as an array of their indexes
+	 * 1) Loops through the songArray elements
+	 * 2) When key is found: Creates a temporary array 1 length longer than the original array containing the same elements. Adds the index found as a string.
+	 * 3) then reassigns this temporary array to foundElements array
+	 * @param = String key = key which user wants to search for
+	 * 			int col    = the category by which user wants to search. e.g: song name
+	 * 			
+	 * @return String array of foundElements (the indexes at which key was found)
+	 */
+	public String[] findByKey(String key, int col) { //start of findByKey method
+		String[] foundElements= new String[0];		//Makes new array to keep track of index for found elements
+		int foundElementsIndex =0;					//Index of foundElements
+		for (int i =0; i<entryIndx; i++) {							//start of looping through songArray
+			if(songArray[i][col].equals(key)) {						//If element matches key:
+				String[]temp = new String[foundElements.length +1];	//make a temporary array larger th
+				for(int t=0; t<foundElements.length; t++) 			//looping through array		
+					temp[t] = foundElements[t];						//copy all elements into temporary array
+				
+				
+				temp[foundElementsIndex] = ""+i;					//Add the index where it was found to temp
+				foundElementsIndex++;								//reassign to found elements index and increment the index size
+				foundElements = temp;								//reassign bigger array to found elements array
+			}//end of if statement for if need to addnew element
+		}//end of for i loop
+		return foundElements;										//return array of found element indexes
+		
+	}//end findByKey method
+
+	/* *readFile
+	 * This procedural method reads from a file on computer, and uploads the data to songArray
+	 * 1) reset songArray to length 10, and entry Indx to 0 (blank because no entries)
+	 * 2) Reads lines until nothing left to read
+	 * 3) Parses each line read into an array, which is added to songArray
+	 * @param = String playlistName = location of file to read from
+	 * @return void
+	 * IOexception
+	 */
+	void readFile(String playlistName)throws IOException{ //start of readFile method
+		String tempArray[][] = new String[10][5]; //make a temporary array
+		entryIndx = 0;								//reset entryIndx
+		songArray = tempArray;	//assign temp to songArray
+		File f = (new File(playlistLocation + playlistName));			//make newfile
+		BufferedReader input = new BufferedReader(new FileReader(f));	//make new BUfferedReader object named input
+		String line = input.readLine();									//read first line
+		while (line != null){ 											//while there'sstuff to read
+			addToArray(parseLine(line));								//read the line and parse itinto the array
+			line = input.readLine(); //Read next line
+		}//end of while
+		input.close();
+	}//end of readFile method
+	
+	/* *askSomething
+	 * This functional method reads asks the user a question and returns a response
+	 * 1) Asks the user the inputed prompt
+	 * 2) Creates a BufferedReader object
+	 * 3) returns the response
+	 * @param = String ask = The prompt asked
+	 * @return void
+	 * @IOexception
+	 */
+	String askSomething(String ask)throws IOException {				//start of askSomething method
+		System.out.println(ask);									//printthe user prompt argument
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));	//make new BufferedReader object
+		String answer = br.readLine();								//readLine
+		while(answer.equals("")) {	//Make sure returning a value loop
+			System.out.println("You gotta put something in :(");	//error msg
+			answer = br.readLine();									//read another line
+		}//end of while loop	
+		return answer;
+	}//end of askSomething method
+	
+	/* *printArray
+	 * This procedural method prints the playlist in table format
+	 * 1) Loops through each song of the playlist
+	 * 2) Check if the index is in the highlight array
+	 * 3) Print each song formatted. true param for printLine: for highlight, false: for not highlight.
+	 * 4) prints a new line until no more elements to print
+	 * @param = String array[][] = 2d Array to print as table
+	 * 			String highlight[] = array of indexes to highlight
+	 * @return void
+	 */
+	void printArray(String array[][], String highlight[]) {			//start of printArray method
+		System.out.println("#index         SONG NAME:                 ARTIST:                    GENRE:                     ALBUM:                     RATING:");	//print the column names
+		
+		for(int i =0; i<array.length; i++) { //loop through array
+			if(array[i][0] != null) {		//if there is an element at the index
+				if(highlight != null) {								//if there is something to highlight
+					for(int p =0; p<highlight.length; p++) {		//search through highlight array
+						if(i == Integer.parseInt(highlight[p]))		//if i matches one o the indexes in highlight array
+							printLine(array[i], i+1, true);			//print the song with a highlight if matches							
+					}//end of highlight search loop
+					
+				}//end of if statement
+				printLine(array[i], i+1, false);				//otherwise dont print the highlight;
+				
+				}//end of if statement
+			System.out.println(""); //print new line
+			}//end of for loop
+	}//end of printArray method
+	
+	/* *printLine
+	 * This procedural method prints the line in evenly space format
+	 * 1) Substracts spaces based on previous entries to maintain clean columns
+	 * @param = String array[]= array to format
+	 * 			int index[] = index of the line to be printed
+	 * 			boolean highlight: highlights the line if true
+	 * @return void
+	 */
+	static void printLine(String array[], int index, boolean highlight) {
+		int numSpace = 27;//default space  between index and rest
+		String x;					//What to print at the index space
+		if(highlight)				//add an asterix if highlighted
+			x = "*" + index;	
+		else
+			x = ""+ index;			//or don't
+		System.out.print(x);
+
+		
+		for(int Space1 = 0; Space1 <15 - x.length(); Space1++ )	//print calculated spaces - index space
+			System.out.print(" ");
+		
+		int lastWordLength = 0;									//keeps track of how long last word was
+		for(int j = 0; j<array.length; j++) {					//for each element in the array print the element
+			System.out.print(array[j]);							
+			lastWordLength = array[j].length();					//Last word length is subtracted from usual space # to print consistent spaces
+			for(int s =0; s< numSpace-lastWordLength; s++) 
+				System.out.print(" ");
+		
+	}; //end of for j loop
+	}//end of printLine method
+	
+	/* *addToArray
+	 * This procedural method adds an entry to songArray
+	 * 1)checks if array can fit another element --> updates size by 5 if yes
+	 * 2)adds newEntry,then increments entryIndx
+	 * @param = String newEntry[] = new song to add
+	 * @return void
+	 */
+	static void addToArray(String newEntry[]){
+		if(entryIndx >= (songArray.length-1)) {										//if songArray can handle accessing entryIndx +1
+			int size = 5 + entryIndx;
+			String tempArray[][] = new String[size][5];
+			for(int i =0; i< songArray.length; i++) {
+				for(int j=0; j<songArray[0].length; j++) 
+					tempArray[i][j] = songArray[i][j];
+			}//end of for i
+			songArray = tempArray;
+		}//end of if
+		
+		songArray[entryIndx] = newEntry;											//adding newEntry to songArrat
+		entryIndx ++;																//increment entryIndx
+	}//end of addToArray method
+	
+	/* *writeToFile
+	 * This procedural method writes songArray to a file
+	 * @param = String fileLocation= location to write to
+	 * @return void
+	 * @IOexception
+	 */
+	
+	void writeToFile(String fileLocation)throws IOException { //add to temporary or main file
+		PrintWriter output; 									
+		output = new PrintWriter(new FileWriter(fileLocation));
+		int length = songArray.length;
+		for(int i =0; i< length; i++) {							//loop through songArray toprint
+			if(songArray[i][0] != null) {
+				String newLine = "";							//a single line that stores song information
+				for(int k =0; k<5; k++) 
+					newLine += songArray[i][k] + "/";			//add a / in between each song attribute 
+
+				output.println(newLine);
+			}//end of if 
+		}//end of for loop
+
+		output.close();
+	}//end of writeToFile method
+	
+	/* *parseLine
+	 * This functional method parses a formatted song lineinto a 1-d array
+	 * 1)makes a new size 5 array
+	 * 2)Add character in read string to another String until reaches /
+	 * 3)add the finished string to the finished array
+	 * @param = String line = line to parse
+	 * @return String[] arrayLine
+	 */
+	String[] parseLine(String line) { //Parse formatted line into array
+		String[] arrayLine = new String[5];//make new String array size 5
+		String attribute="";				//keeps track of the current word being parsed
+		int arrayLineIndx = 0;				//keeps track of which index to update to (increments at break "/")
+		for (int i =0; i<line.length(); i++) {	//loops through the string
+			if(line.charAt(i)== '/') {			
+				arrayLine[arrayLineIndx] = attribute;	//add attribute string to arrayLine at its index
+				attribute = "";							//reset attribute
+				arrayLineIndx ++;						//increment index
+			}//end if state,emt
+			else
+			attribute += line.charAt(i);				//else keep adding characters to attribute
+		}//end for i loop
+		return arrayLine;								//return the finished array
+	}//end parseLine method
+	
+	/* *parseLine
+	 * This functional boolean method checks if a String is more alphabetically advanced than another
+	 * 1)check if same word
+	 * 2)if not same word keep checking characters in order until they are different
+	 * 3)loop through ALPHORDER (alphabet order) to find which character appears first
+	 * @param = String a = first String,
+	 * 			String b =second String
+	 * @return boolean (if String a is found before b)
+	 */
+	static public boolean higherWord(String a, String b) {
+		int cindx = 0;	//Keeps track of character index in String
+		if(a.equals(b))//same word case, then return that b is not higher than a.
+			return false; 
+		
+		while(a.charAt(cindx) == b.charAt(cindx)) {	//loop through String until different character is found
+			if(cindx < a.length()-1 && cindx < b.length()-1)
+				cindx ++;
+		}//end of while loop
+		
+		char charA = a.charAt(cindx);	//assign respective character from String to variables
+		char charB = b.charAt(cindx);
+		
+		for(byte i =0; i< ALPHORDER.length; i++) { //Loop through alphabet order (ALPHORDER) until first match is found
+			if(charA == ALPHORDER[i])
+				return true;	
+			if(charB == ALPHORDER[i])
+				return false;
+
+		}//end of for loop
+		return true; //return true if not found
+	}//end of higherWord method
+	
+	/* *bubbleSort
+	 * This procedural  method sorts in alphabetical order based on a criteria and in ascending/descending
+	 * @param = int sortFactor= which criteria to sort by (e.g album..artist)
+	 * 			boolean ascending = if it is in ascending or descending order
+	 * 
+	 * @return void
+	 */
+	public void bubbleSort( int sortFactor, boolean ascending) {
+		boolean flag = true;
+		String checkHigher;
+		String checkLower;
+		for(int i =0; i<entryIndx; i++) {//loop through songArray elements
+			for(int j =0; (j< (entryIndx -1)-i);j++) { //loop through comparison elements
+				if(ascending == true) {//if this is ascending then check if the later element should be in front
+					 checkHigher = songArray[j+1][sortFactor].toLowerCase();
+					 checkLower = songArray[j][sortFactor].toLowerCase();
+				}
+				else {//if this is descending then check if the earlier element should be in back
+					 checkLower = songArray[j+1][sortFactor].toLowerCase();
+					 checkHigher = songArray[j][sortFactor].toLowerCase();
+				}
+				
+				if(higherWord(checkHigher, checkLower)) { //if checkHigher String is alphabetically in front of checkLower return true or false
+					flag = false;
+					//swap them if theyre not in order
+						String[] temp = songArray[j+1]; 
+						songArray[j+1] = songArray[j];
+						songArray[j] = temp;
+
+				}//end of if statement
+			}//end of comparison loop
+			if (flag == true)//if it's in the right order moveon
+				break;
+			else
+				flag = true;
+		}//end of for i loop
+	}
+	/* *checkSort
+	 * This functional boolean method checks if a 2d array is sorted
+	 * @param = String arr[][] = 2d array to check
+	 * 			int sortFactor= which criteria to sort by (e.g album..artist)
+	 * 			boolean ascending = if it is in ascending or descending order
+	 * @return boolean (if in order or not)
+	 */
+	public boolean checkSort(String arr[][], int sortFactor, boolean ascending) {
+		String checkHigher;
+		String checkLower;
+		for(int i =0; i<entryIndx-1; i++) {
+				if(ascending == true) {
+					 checkHigher = arr[i+1][sortFactor].toLowerCase(); //check if later element is higher in ascending
+					 checkLower = arr[i][sortFactor].toLowerCase();		
+				}//end of if
+				else {
+					 checkLower = arr[i+1][sortFactor].toLowerCase();	//check if earlier element is higher in descending
+					 checkHigher = arr[i][sortFactor].toLowerCase();
+				}//end of else
+
+				if(higherWord(checkHigher, checkLower)) 
+					return false;  //if whatever we are checking is true (e.g ascending: indx 2 is alphabetically in front of 1, then it is not ordered.)
+				
+			
+		}//end of for 
+		return true; //if nothings wrong it must be ordered
+	}//end of checkSort method
+	
+	/* *askForNum
+	 * This functional method will only accept an input based on parameters
+	 * @param = String ask = prompt
+	 * 			int num = highest num it will accept from 0
+	 * 			String error = error msg to print
+	 * @return the valid String
+	 */
+	 public String askForNum(String ask, int num, String error)throws IOException {
+		System.out.println(ask); //print prompt
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); //make BufferedReader instance
+		String input;						
+		while(true) {								//while non valid input
+			input = br.readLine();					//get an input
+			for(int i =0; i<=num; i++){				//check every number from 0 to num and see if input matches
+				if(input.equals(""+i))				//if it does, return it. 
+					return input;
+				
+			}//end of for loop
+			System.out.println(error);				//if it doesn't, print error. keep looping
+		}//end of while true loop
+		
+	}//end of askForNum method
+	 
+
+	/* *MakeNew File
+	 * This functional method makes a new file
+	 * @param = String name = what to name the file?
+	 * @return void
+	 * @IOException
+	 */
+	public void makeNewFile(String name)throws IOException{
+			fileLoc = playlistLocation + name;	//Mr.Cho replace this with your folder location
+			File f = new File(fileLoc);			//make the file
+			f.createNewFile();					//make it real
+	}//end of makeNewFile method
+	 
+
+	/* *makeRandomPlaylist
+	 * This procedural method picks random elements from a pool to make a size x array
+	 * @param = int rows = how many songs to add
+	 * @return void
+	 */
+	public void makeRandomPlaylist(int rows) {
+		//random pools of options 
+		final String[] RANARTIST = {"lil Cho", "The CHOster", "Spadina and Cho", "Dundas", "Yonge", "Putnam", "Fermat", "Euclid", "Wizarrd"};
+		final String[] RANSNAME = {"0Song", "1Lewis", "23Hamilton Song", "24Dundas Dance", "Queens", "King Street", "Highway", "Warden Ave"};
+		final String[] RANGENRE = {"Bard music", "Pop", "Techno", "House", "Jpop", "Instrumental", "uhhidk", "Google", "Whimsy"};
+		final String[] RANALBUM = {"Single", "I live in Toronto", "Orange", "I am a wizard", "Help", "GETMEOUTRAHH"};
+		String[][] ranArray = new String[rows][5]; //make a new 2d String Array to store the random things
+		for(int i =0; i < ranArray.length; i++) {	//fill the Array at each index with random things
+			ranArray[i][GENRE] = RANGENRE[(int) Math.round(Math.random()*(RANGENRE.length-1))];
+			ranArray[i][SNAME] = RANSNAME[(int) Math.round(Math.random()*(RANSNAME.length-1))];
+			ranArray[i][ALBUM] = RANALBUM[(int) Math.round(Math.random()*(RANALBUM.length-1))];
+			ranArray[i][ARTIST] = RANARTIST[(int) Math.round(Math.random()*(RANARTIST.length-1))];
+			ranArray[i][RATING] = ""+ ((int) Math.round(Math.random()*5));	
+		}//end of random filling loop
+		//making these changes to songArray
+		entryIndx = rows;
+		songArray = ranArray;
+	}//end of makeRandomPlaylist method
+}//end of Playlist class

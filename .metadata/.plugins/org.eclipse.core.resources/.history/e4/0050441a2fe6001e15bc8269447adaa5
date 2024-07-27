@@ -1,0 +1,185 @@
+import java.io.*;
+
+public class Tribulation1 {
+
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int programChoice = 1;
+		String quitCondition = "";
+		String programRepeatCondition = "";
+
+		
+		do {
+			System.out.println("Today's menu has three very special very exciting "
+					+ "programs. Choose the corresponding number to pick your exciting program, or type 'q' to quit.");
+			
+			System.out.println("1.     Binary/Decimal Converter");
+			System.out.println("2.     Factorial Calculator");
+			System.out.println("3.     PI Calculator");
+			
+			System.out.print("Your pick is: ");
+			quitCondition = br.readLine();
+			
+			while(!quitCondition.equals("q")) {		
+				while (!quitCondition.equals("q")) {
+				    try {
+				        programChoice = Integer.parseInt(quitCondition);
+
+				        if (programChoice >= 1 && programChoice <= 3) {
+				            break;
+				        } else {
+				            System.out.println("Invalid input. Please enter 1, 2, 3, or q: ");
+				        }
+				    } catch (NumberFormatException e) {
+				        System.out.println("Please enter an integer number or q: ");
+				    }
+
+				    quitCondition = br.readLine();
+				
+				}
+				
+	                   
+			}//end of while not quit loop
+				
+			if(quitCondition.equals("q")) {
+				break;
+			}
+	        	   
+			programChoice = Integer.parseInt(quitCondition);
+			switch(programChoice){
+			case 1:
+				System.out.println("You've chosen: bin");
+				break;
+				
+				
+				
+			case 2:
+				programRepeatCondition = "";
+				
+				do {
+					int factorial;
+					int factorialSum = 1;
+					System.out.println("What factorial would you like to calculate?");
+					
+			           while (true) {
+			        	   
+			        	   while (true) { // Catch not integer error
+			                   try {
+			                       factorial = Integer.parseInt(br.readLine());
+			                       break;
+			                   } catch (NumberFormatException e) {
+			                       System.out.println("Please enter an integer number. ");
+			                   }
+			               }
+			        	   
+				           if (factorial <0) {
+				        	   System.out.println("please enter a positive integer!");
+				      
+				           }
+				           else {
+				        	   
+				        	   break;
+				           }
+			           }
+					
+					System.out.println("Calculating: "+ factorial + "!: ");
+					
+					System.out.print(factorial);
+					for (int i = (factorial-1); i>0; i-=1) {
+						System.out.print("x" + i);
+					}
+					
+					System.out.print("=");
+					
+					for (;factorial > 0; factorial -=1) {
+						factorialSum*=factorial;
+					}
+					System.out.print(factorialSum);
+					System.out.println("");
+					System.out.println("Type 'm' to return to the menu, or any other character to repeat the program.");
+					programRepeatCondition = br.readLine();
+				}while(!programRepeatCondition.equals("m"));
+				break;
+				
+			case 3:
+				
+				programRepeatCondition = "";
+				do {
+				double Pi = 0;
+				int term;
+				int dPlaces;
+				
+				System.out.println("How many terms do you want to calculate for pi?");
+		        while (true) {
+		     	   
+		     	   while (true) { // Catch not integer error
+		                try {
+		                    term = Integer.parseInt(br.readLine());
+		                    break;
+		                } catch (NumberFormatException e) {
+		                    System.out.println("Please enter an integer number.");
+		                }
+		            }
+		     	   
+			           if (term <0) {
+			        	   System.out.println("please enter a positive integer!");
+			      
+			           }
+			           else {
+			        	   
+			        	   break;
+			           }
+		        }
+				
+				
+				System.out.println("how many decimal places would you like to round it to?");
+				while (true) {
+			     	   
+			     	   while (true) { // Catch not integer error
+			                try {
+			                    dPlaces = Integer.parseInt(br.readLine());
+			                    break;
+			                } catch (NumberFormatException e) {
+			                    System.out.println("Please enter an integer number.");
+			                }
+			            }
+			     	   
+				           if (dPlaces <0) {
+				        	   System.out.println("please enter a positive integer!");
+				      
+				           }
+				           else {
+				        	   
+				        	   break;
+				           }
+			        }
+				
+				for (int factor = 1, termNum=1, one=1; termNum <= term; factor +=2, termNum +=1, one*=-1) {
+					
+					System.out.print(termNum + "     ");
+					Pi += ((double) 4/factor * one);
+					System.out.println((double) Math.round(Pi * Math.pow(10, dPlaces))/(Math.pow(10, dPlaces)));
+					System.out.println("");
+
+				}
+				
+				System.out.println("Type 'm' to return to the menu, or any other character to repeat the program.");
+				programRepeatCondition = br.readLine();
+			}while(!programRepeatCondition.equals("m"));
+				break;
+		
+
+
+		
+			}
+	
+			}while(!quitCondition.equals("q"));
+		System.out.println("Thanks for playing");
+		
+	
+	
+	}//end of main class
+	}//end of tribulation class
+	
+
+		

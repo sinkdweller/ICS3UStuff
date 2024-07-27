@@ -1,0 +1,101 @@
+import java.io.*;
+public class Arr1 {
+
+	public static void main(String[] args)throws IOException {
+		Arr1 Meth = new Arr1();
+		
+		int[][] Array = new int[5][5];
+		do {
+			if(Meth.AskSomething("Enter 1 to generate random or 2 to fill array. size: 5x5") == 1) {
+				Array = Meth.generateArray(5);
+				Meth.printArray(Array);
+			}
+			else
+				Array = Meth.AskSquare(5);
+			
+			int sum = Meth.checkRow(Array[0]);
+			//CHECK THE ARRAY
+			int i = 0;
+			while(i<Array.length) {
+				if(sum != Meth.checkRow(Array[i]) || sum!= Meth.checkCol(Array, i) || sum!= Meth.checkDiagonalLeft(Array)|| sum!= Meth.checkDiagonalRight(Array)) {
+					System.out.println("invalid");
+					break;
+				}
+				i++;
+			}
+			if (i==Array.length) {
+				System.out.println("valid");
+			}
+		}while(Meth.AskSomething("enter 1 to replay the program or anything else to quit") == 1);
+		
+	}
+	
+	public void printArray(int[][] Array) {
+		for(int i=0; i<Array.length; i++) {
+			for(int j = 0; j<Array.length; j++) {
+				System.out.print(Array[i][j] + " ");
+			}
+			System.out.println("");
+		}
+		
+	}
+	public int AskSomething(String ask) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println(ask);
+		return Integer.parseInt(br.readLine());
+	
+	}
+	public int[][] AskSquare(int size)throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("PLease enter numbers into your magic square fro  left to right then top to bottom that isthe order");
+		int[][] FuckingSquare = new int[size][size];
+		for(int i=0; i<FuckingSquare.length; i++) {
+			for(int j =0; j<FuckingSquare.length; j++) {
+				FuckingSquare[i][j] = Integer.parseInt(br.readLine());
+			}
+		}
+		return FuckingSquare;
+	}
+	public int checkRow(int[] row) {
+		int sum =0;
+		for(int i = 0; i< row.length; i++) {
+			sum += row[i];
+		}
+		return sum;
+		
+	}
+	public int checkCol(int[][] array, int colNum) {
+		int sum = 0;
+		for (int i = 0; i<array.length; i++) {
+			sum += array[i][colNum];
+		}
+		return sum;
+	}
+	public int checkDiagonalRight(int[][] array) {
+		int sum = 0;
+		for(int i = 0; i<array.length; i++) {
+			sum += array[i][i];
+		}
+		return sum;
+	}
+	public int checkDiagonalLeft(int[][] array) {
+		int sum = 0;
+		for(int i = array.length-1; i>=0; i-=1) {
+			sum += array[i][i];
+		}
+		return sum;
+	}
+	public int[][] generateArray(int size){
+		int[][] array = new int[size][size];
+	
+		for(int i = 0; i<size; i++) {
+			for(int j = 0; j< size; j++) {
+				array[i][j] = (int)(Math.random()*1000) + 1;
+		}
+	}
+		return array;
+	}
+	
+
+
+}

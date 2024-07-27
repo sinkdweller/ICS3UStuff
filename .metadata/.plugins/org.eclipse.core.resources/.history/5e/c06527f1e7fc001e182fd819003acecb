@@ -1,0 +1,68 @@
+import java.io.*;
+public class Arr1 {
+
+	public static void main(String[] args)throws IOException {
+		// TODO Auto-generated method stub
+		//MAGIC SQURE
+		int sum;
+		Arr1 Meth = new Arr1();
+		int[][] Array = new int[5][5];
+		Array = Meth.AskSquare();
+		sum = Meth.checkRow(Array[0]);
+		int i = 0;
+		while(i<Array.length) {
+			if(sum != Meth.checkRow(Array[i]) || sum!= Meth.checkCol(Array, i) || sum!= Meth.checkDiagonalLeft(Array)|| sum!= Meth.checkDiagonalRight(Array)) {
+				System.out.println("invalid");
+				break;
+			}
+			i++;
+			
+		
+		}
+		
+		
+	}
+	public int[][] AskSquare()throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		System.out.println("PLease enter numbers into your magic square fro  left to right then top to bottom that isthe order");
+		int[][] FuckingSquare = new int[5][5];
+		for(int i=0; i<FuckingSquare.length; i++) {
+			for(int j =0; j<FuckingSquare.length; j++) {
+				FuckingSquare[i][j] = Integer.parseInt(br.readLine());
+			}
+		}
+		return FuckingSquare;
+	}
+	public int checkRow(int[] row) {
+		int sum =0;
+		for(int i = 0; i< row.length; i++) {
+			sum += row[i];
+		}
+		return sum;
+		
+	}
+	public int checkCol(int[][] array, int colNum) {
+		int sum = 0;
+		for (int i = 0; i<array.length; i++) {
+			sum += array[i][colNum];
+		}
+		return sum;
+	}
+	public int checkDiagonalRight(int[][] array) {
+		int sum = 0;
+		for(int i = 0; i<array.length; i++) {
+			sum += array[i][i];
+		}
+		return sum;
+	}
+	public int checkDiagonalLeft(int[][] array) {
+		int sum = 0;
+		for(int i = array.length-1; i>=0; i-=1) {
+			sum += array[i][i];
+		}
+		return sum;
+	}
+	
+
+
+}

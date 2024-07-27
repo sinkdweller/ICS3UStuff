@@ -1,0 +1,95 @@
+import java.io.*;
+import java.text.DecimalFormat;
+
+public class ExitTicketProgram {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String newGroup = "y";
+
+        DecimalFormat df = new DecimalFormat("0.00");
+        int age;
+
+        do {
+
+            System.out.println("ORDER TICKETS RIGHT NOW!!! DO IT!!!! ");
+            System.out.println("Here are your ticket options: ");
+            System.out.println("Senior (65 years and over):  free");
+            System.out.println("12-65:                       $900");
+            System.out.println("under 12:                    $100");
+
+            String orderAnother = "y";
+            int adults = 0;
+            int children = 0;
+            int ticketsBought = 0;
+
+            
+            
+            while (orderAnother.equals("y")) {
+
+                System.out.println("Please enter your age: "); // Ask for Age
+
+                while (true) { // Catch non integer error
+                    try {
+                        age = Integer.parseInt(br.readLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Not a valid age/whole number! Try again!");
+                    }
+                }
+                while (age <= 0) { // Catch negative age error
+                    System.out.println("Please enter a valid age above 0!");
+                    age = Integer.parseInt(br.readLine());
+                }
+
+                
+                
+                
+                
+                System.out.println("Please enter how many tickets you wish to buy: "); //Ask for tickets
+
+                while (true) { // Catch not integer error
+                    try {
+                        ticketsBought = Integer.parseInt(br.readLine());
+                        break;
+                    } catch (NumberFormatException e) {
+                        System.out.println("Please enter an integer number. How many tickets do you wish to buy?");
+                    }
+                }
+
+                while (ticketsBought <= 0) { // Catch negative ticket count error
+                    System.out.println("Please enter a valid number above 0!");
+                    ticketsBought = Integer.parseInt(br.readLine());
+                } 
+
+                // Add tickets bought for each age
+                if (age >= 12) {
+                    adults += ticketsBought;
+                } else if (age >= 0) {
+                    children += ticketsBought;
+                }
+
+                System.out.println("Would you like to order more? Enter 'y' for yes");
+                orderAnother = br.readLine();
+
+            }
+
+            double subtotal = adults * 900 + children * 100;
+            double total = subtotal * 1.13;
+            System.out.println("Your subtotal is:            " + df.format(subtotal));
+            System.out.println("Your total after taxes is:   " + df.format(total));
+
+            if (adults >= 10) {
+                System.out.println("Added discount!!! 10 adults discount -10%");
+                total *= 0.9;
+            }
+
+            System.out.println("Your grand total is:         " + df.format(total));
+
+            System.out.println("\nPay for another group? Enter 'y' for yes, or any other character to exit");
+            newGroup = br.readLine();
+
+        } while (newGroup.equals("y"));
+    }
+}

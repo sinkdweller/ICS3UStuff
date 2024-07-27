@@ -1,0 +1,114 @@
+import java.io.*;
+
+public class BinaryConvert {
+
+	public static void main(String[] args)throws IOException {
+		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));   //Create BufferedReader object
+		
+		String programRepeatCondition = "";  										//Condition to repeat the program
+		do {
+			String convertChoice;               										//Store what type of conversion the user wants to do 
+			System.out.println("would you like to convert a decimal to binary or convert binary to decimal?");
+			System.out.println("1.    Convert decimal to binary");
+			System.out.println("2.    Convert binary to decimal");
+			
+			System.out.print("enter (1) or (2) to select.");
+			while(!convertChoice.equals("1") || !convertChoice.equals("2")) {                      										//Loop to get user choice for program- either 1 or 2.
+				System.out.println("Please enter 1 or 2!!!");
+				convertChoice = br.readLine();
+				
+			}
+			
+			
+			switch(convertChoice) {
+			//Convert decimal to binary
+				case "1":
+					System.out.println("What number would you like to convert to binary?");
+					int toBinary;
+	
+					toBinary = Integer.parseInt(br.readLine());
+					String decToBin="";
+					
+					while(toBinary !=0) {
+						if(toBinary %2 !=0) {
+							decToBin = "1" + decToBin;
+							toBinary -=1;
+						}
+						
+						else {
+							decToBin = "0" + decToBin;
+						}
+						toBinary/=2;
+					}
+					System.out.println("Your number in binary is: " + decToBin);
+					break;
+			//convert binary to decimal;
+				case "2":
+			        int toDecimal; // Binary number input by the user
+			        int binToDec = 0;
+			        int pow = 1;
+			        int temp;
+			        boolean validate = false;
+
+			        System.out.println("What binary number would you like to convert into decimal?");
+			        
+
+			        while (true) {
+			            try {
+			                
+			                System.out.print("Enter a binary number: ");
+			                toDecimal = Integer.parseInt(br.readLine());
+			                temp = toDecimal;
+
+			                while (temp > 0) {
+			                    if (temp % 10 != 0 && temp % 10 != 1) {
+			                        System.out.println("Please enter a proper binary number!! (1s and 0s, positive)");
+			                        validate = false;
+			                        break;
+			                    }
+			                    temp /= 10;
+			                }
+
+			                if (temp == 0) {
+			                    validate = true;
+			                }
+
+			                if (validate) {
+			                    break;
+			                }
+			            } catch (NumberFormatException e) {
+			                System.out.println("Please enter an integer number.");
+			            }
+			        }
+			        	
+			        	
+			        	
+			        
+			        // Validate binary input
+			        
+
+			        while (toDecimal > 0) {
+			            binToDec += (toDecimal % 10) * pow;
+			            toDecimal /= 10;
+			            pow *= 2;
+			        }
+
+			        System.out.println("Your number in decimal is: " + binToDec);
+					break;
+
+			    }
+					
+			
+			System.out.println("");
+			
+			System.out.println("Type 'm' to return to the menu, or any other character to repeat the program.");
+			programRepeatCondition = br.readLine();
+		}while(!programRepeatCondition.equals("m"));
+
+
+	}
+		
+	}
+
+

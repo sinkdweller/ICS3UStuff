@@ -1,0 +1,38 @@
+import java.io.*;
+
+public class Tribulation1 {
+
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		String programChoice;
+
+		
+		
+		System.out.println("Today's menu has three very special very exciting "
+				+ "programs. Choose the corresponding number to pick your exciting program.");
+		
+		System.out.println("1.     Binary/Decimal Converter");
+		System.out.println("2.     Factorial Calculator");
+		System.out.println("3.     PI Calculator");
+
+		programChoice = br.readLine();
+		
+		switch(programChoice){
+		case "1":
+			System.out.println("You've chosen: bin");
+			break;
+		case "2":
+			System.out.println("youve chosen: 2");
+			break;
+		case "3":
+			System.out.println("Please chose3");
+		}
+		
+			
+		
+
+
+		
+	}
+
+}

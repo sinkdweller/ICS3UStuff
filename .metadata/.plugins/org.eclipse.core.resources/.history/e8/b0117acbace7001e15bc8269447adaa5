@@ -1,0 +1,19 @@
+
+public class FactorialTable {
+
+	public static void main(String[] args) {
+		String factorialString = "1";
+		int factorial = 1;
+		
+		for(int i=2; i<=15; i++) {
+			System.out.print(i);
+			factorialString += ("x" + i);
+			factorial =factorial*i;
+			
+			System.out.print("              " +factorial);
+			System.out.print("               " +          factorialString);
+			System.out.println("");
+		}
+	}
+
+}

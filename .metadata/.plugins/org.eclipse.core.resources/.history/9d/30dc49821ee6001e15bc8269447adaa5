@@ -1,0 +1,86 @@
+import java.io.*;
+
+public class Tribulation1 {
+
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int programChoice;
+		String quitCondition = "";
+		
+		do {
+			System.out.println("Today's menu has three very special very exciting "
+					+ "programs. Choose the corresponding number to pick your exciting program.");
+			
+			System.out.println("1.     Binary/Decimal Converter");
+			System.out.println("2.     Factorial Calculator");
+			System.out.println("3.     PI Calculator");
+			
+			System.out.print("Your pick is: ");
+	
+			programChoice = Integer.parseInt(br.readLine());
+			
+			switch(programChoice){
+			case 1:
+				System.out.println("You've chosen: bin");
+				break;
+				
+				
+				
+			case 2:
+				int factorial;
+				int factorialSum = 1;
+				System.out.println("What factorial would you like to calculate?");
+				factorial = Integer.parseInt(br.readLine());
+				System.out.println("Calculating: "+ factorial + "!: ");
+				
+				System.out.print(factorial);
+				for (int i = (factorial-1); i>0; i-=1) {
+					System.out.print("x" + i);
+				}
+				
+				System.out.print("=");
+				
+				for (;factorial > 0; factorial -=1) {
+					factorialSum*=factorial;
+				}
+				System.out.print(factorialSum);
+				
+				break;
+				
+				
+				
+			case 3:
+				
+				double Pi = 0;
+				int term;
+				int dPlaces;
+				
+				System.out.println("How many terms do you want to calculate for pi?");
+				term = Integer.parseInt(br.readLine());
+				
+				System.out.println("how many decimal places would you like to round it to?");
+				dPlaces = Integer.parseInt(br.readLine());
+				
+				for (int factor = 1, termNum=1, one=1; termNum <= term; factor +=2, termNum +=1, one*=-1) {
+					
+					System.out.print(termNum + "     ");
+					Pi += ((double) 4/factor * one);
+					System.out.println((double) Math.round(Pi * Math.pow(10, dPlaces))/(Math.pow(10, dPlaces)));
+					System.out.println("");
+
+				}
+				
+				break;
+			}
+			
+			System.out.println("Type 'n' if you would like to quit now, or any other character if you want to choose another program.");
+			quitCondition = br.readLine();
+		}while(!quitCondition.equals("n"));
+			
+		
+
+
+		
+	}
+
+}

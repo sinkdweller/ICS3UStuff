@@ -1,0 +1,49 @@
+import java.io.*;
+public class PiCalc {
+
+	public static void main(String[] args)throws IOException {
+		// TODO Auto-generated method stub
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		double Pi = 0;
+		int term;
+		int dPlaces;
+		
+		System.out.println("How many terms do you want to calculate for pi?");
+        while (true) {
+     	   
+     	   while (true) { // Catch not integer error
+                try {
+                    term = Integer.parseInt(br.readLine());
+                    break;
+                } catch (NumberFormatException e) {
+                    System.out.println("Please enter an integer number.");
+                }
+            }
+     	   
+	           if (term <0) {
+	        	   System.out.println("please enter a positive integer!");
+	      
+	           }
+	           else {
+	        	   
+	        	   break;
+	           }
+        }
+		
+		
+		System.out.println("how many decimal places would you like to round it to?");
+		dPlaces = Integer.parseInt(br.readLine());
+		
+		for (int factor = 1, termNum=1, one=1; termNum <= term; factor +=2, termNum +=1, one*=-1) {
+			
+			System.out.print(termNum + "     ");
+			Pi += ((double) 4/factor * one);
+			System.out.println((double) Math.round(Pi * Math.pow(10, dPlaces))/(Math.pow(10, dPlaces)));
+			System.out.println("");
+
+		}
+		
+
+	}
+
+}

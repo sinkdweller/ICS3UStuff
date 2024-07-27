@@ -1,0 +1,91 @@
+import java.io.*;
+import java.text.DecimalFormat;
+
+public class ExitTicketProgram {
+
+	public static void main(String[] args)throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		
+		String newGroup = "y";
+		
+		DecimalFormat df = new DecimalFormat("0.00");
+		int age;
+	
+		
+		do {
+			
+			System.out.println("Would you like to order some tickets for your group? ");
+			System.out.println("Here are your ticket options: ");
+			System.out.println("Senior (65 years and over): free");
+			System.out.println("12-65: $900");
+			System.out.println("under 12: $100");
+			
+			String orderAnother = "y";
+			int Adults = 0;
+			int Seniors = 0;
+			int Children = 0;
+			
+			while(orderAnother.equals("y")) {
+				
+				
+				System.out.println("please enter your age: ");
+				while (true) {
+					try {
+					age = Integer.parseInt(br.readLine());
+					break;
+					}
+					catch (NumberFormatException e) {
+						System.out.println("Not an age/number! try again!");
+					}
+				}
+				
+				System.out.println("Please enter how many tickes you wish to buy. ");
+				while (true) {
+					try {
+						if (age>= 65) {
+							Seniors += Integer.parseInt(br.readLine());
+							break;
+						}
+						
+						if (age >=12) {
+							Adults += Integer.parseInt(br.readLine());
+							break;
+						}
+						
+						else if (age >=0) {
+							Children += Integer.parseInt(br.readLine());
+							break;
+						}
+					}
+					catch (NumberFormatException e) {
+						System.out.println("Please enter anumber!");
+					}
+				}
+				
+
+				System.out.println("Would you like to order more? y for yes");
+				orderAnother = br.readLine();
+				
+				
+				
+			}
+			double subtotal = Adults*900 + Children*100;
+			double total = subtotal*1.13;
+			System.out.println("Your subtotal is          "+ df.format(subtotal));
+			System.out.println("Your total after taxes is " + df.format(total));
+			
+			if (Adults >= 10) {
+				System.out.println("PROMO!!! 10 adults discount -10%");
+				total *= 0.9;
+			}
+			
+			System.out.println("Your grand total is       " + df.format(total));
+			
+			System.out.println("\n pay for another group?");
+			newGroup = br.readLine();
+			
+			//Calculate total, ask for newGroup
+		}while(newGroup.equals("y"));
+	}
+
+}

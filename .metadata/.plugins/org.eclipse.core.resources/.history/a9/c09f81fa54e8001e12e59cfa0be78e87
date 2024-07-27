@@ -1,0 +1,47 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class tribs {
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String programChoice;
+
+        do {
+            System.out.println("Choose the corresponding number to pick your exciting program, or type 'q' to quit.");
+
+            System.out.println("1. Binary/Decimal Converter");
+            System.out.println("2. Factorial Calculator");
+            System.out.println("3. PI Calculator");
+
+            System.out.print("Your pick is: ");
+            programChoice = br.readLine();
+
+
+
+            switch (programChoice) {
+                case "1":
+            		System.out.println("harharhar");
+            		break;
+            			//convert binary to decimal;
+            				
+            			       
+                case "2":
+                	System.out.println("this is choice 2");
+                    break;
+
+                case "3":
+                    System.out.println("this is case 3");
+                    break;
+                default:
+                	System.out.println("please enter 1, 2 or 3.");
+                	break;
+
+            }
+        } while (!programChoice.equals("q"));
+
+        System.out.println("Thanks for playing");
+    }
+}
